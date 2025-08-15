@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cWee</title>
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: monospace;
+        background: #fdfdfd;
+        color: #222;
+        font-size: 18px;
+    }
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+    h1 {
+        margin: 0 0 10px;
+        font-size: 2.2rem;
+        color: #000;
+    }
+    h1::before {
+        content: "$ ";
+        color: #4caf50;
+    }
+    .subtitle {
+        color: #555;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    /* Search form styling */
+    .search-wrapper {
+        display: flex;
+        justify-content: flex-start; /* align to left */
+        width: 100%;
+        margin-bottom: 25px;
+    }
+    form {
+        display: flex;
+        gap: 10px;
+        background-color: #fafafa;
+        padding: 10px;
+        border: 1px dashed #ccc;
+        border-radius: 5px;
+        flex: 1; /* allow it to stretch */
+    }
+    select, input, button {
+        font-family: monospace;
+        font-size: 1rem;
+        padding: 6px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        color: #222;
+    }
+    select {
+        flex: 0 0 160px;
+    }
+    input {
+        flex: 1;
+    }
+    button {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    button:hover {
+        background-color: #43a047;
+    }
+
+    /* Results table */
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    table-layout: fixed; /* Forces columns to fixed width for wrapping */
+    }
+
+    th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px dashed #ccc;
+    vertical-align: top;
+    word-wrap: break-word; /* Wraps long words */
+    white-space: normal;   /* Allows line breaks */
+    }
+
+    th {
+        color: #4caf50;
+    }
+    tr:hover td {
+        background-color: #f3f3f3;
+    }
+
+    /* Responsive for small screens */
+    @media (max-width: 600px) {
+        form {
+            flex-direction: column;
+        }
+        select, input, button {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+    }
+
+    footer {
+        margin-top: 3rem;
+        font-size: 1rem;
+        color: #777;
+        text-align: center;
+    }
+    footer a {
+        color: #555;
+        text-decoration: none;
+    }
+    footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+    <h1>cWee</h1>
+    <div class="subtitle">awwfensive cve searching!</div>
+
+    <!-- Search form wrapper -->
+    <div class="search-wrapper">
+        <form method="POST">
+            <select name="searchType" id="searchType">
+                <option value="keyword" {% if form_data.searchType == "keyword" %}selected{% endif %}>Keyword</option>
+                <option value="cveId" {% if form_data.searchType == "cveId" %}selected{% endif %}>CVE ID</option>
+                <option value="cpeName" {% if form_data.searchType == "cpeName" %}selected{% endif %}>CPE Name</option>
+                <option value="severity" {% if form_data.searchType == "severity" %}selected{% endif %}>Severity</option>
+                <option value="dateRange" {% if form_data.searchType == "dateRange" %}selected{% endif %}>Date Range</option>
+            </select>
+            <input type="text" name="searchQuery" id="searchQuery" placeholder="Enter search term..." value="{{ form_data.searchQuery }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <script>
+        const searchType = document.getElementById('searchType');
+        const searchQuery = document.getElementById('searchQuery');
+
+        const placeholders = {
+            keyword: "Enter keyword (e.g., javascript)",
+            cveId: "Enter CVE ID (e.g., CVE-2021-44228)",
+            cpeName: "Enter CPE (e.g., cpe:/a:apache:http_server:2.4.49)",
+            severity: "Enter severity (LOW, MEDIUM, HIGH, CRITICAL)",
+            dateRange: "Enter date range (YYYY-MM-DD to YYYY-MM-DD)"
+        };
+
+        function updatePlaceholder() {
+            searchQuery.placeholder = placeholders[searchType.value];
+        }
+
+        searchType.addEventListener('change', updatePlaceholder);
+        updatePlaceholder();
+    </script>
+
+    {% if cves %}
+        <table>
+            <thead>
+                <tr>
+                    <th>CVE ID</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cve in cves %}
+                <tr>
+                    <td><a href="https://nvd.nist.gov/vuln/detail/{{ cve.id }}" target="_blank">{{ cve.id }}</a></td>
+                    <td>{{ cve.descriptions[0].value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif form_data.searchQuery %}
+        <p>No CVEs found.</p>
+    {% endif %}
+</div>
+
+
+
+        {% if cves %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>CVE ID</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cve in cves %}
+                    <tr>
+                        <td><a href="https://nvd.nist.gov/vuln/detail/{{ cve.id }}" target="_blank">{{ cve.id }}</a></td>
+                        <td>{{ cve.descriptions[0].value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif form_data.searchQuery %}
+            <p>No CVEs found.</p>
+        {% endif %}
+
+        <footer>
+            <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px;">
+            <div style="font-size: 0.95rem; color: #666;">
+                built with <span style="color: #4caf50;">&lt;3</span> for security research
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
