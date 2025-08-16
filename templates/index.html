@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cWee</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
 <style>
     body {
         margin: 0;
@@ -183,30 +185,6 @@
         <p>No CVEs found.</p>
     {% endif %}
 </div>
-
-
-
-        {% if cves %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>CVE ID</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cve in cves %}
-                    <tr>
-                        <td><a href="https://nvd.nist.gov/vuln/detail/{{ cve.id }}" target="_blank">{{ cve.id }}</a></td>
-                        <td>{{ cve.descriptions[0].value }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% elif form_data.searchQuery %}
-            <p>No CVEs found.</p>
-        {% endif %}
-
         <footer>
             <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px;">
             <div style="font-size: 0.95rem; color: #666;">

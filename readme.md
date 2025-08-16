@@ -1,20 +1,24 @@
-# CVE Search Tool
+<h1 align="center"><span style="color: #4caf50;">$ </span>cWee</h1>
+<h4 align="center">Advance CVE searching.</h4>
+	   ![demo](https://i.ibb.co/Cs6vQ77W/image.png)
+## cWee
+**cWee** is an advanced CVE (Common Vulnerabilities and Exposures) searching tool, built on top of the powerful [nvdlib](https://nvdlib.com/en/latest/v2/CVEv2.html) library.
 
-A flexible Python tool to search CVEs (Common Vulnerabilities and Exposures) from the [NVD](https://nvd.nist.gov/) database with advanced filters such as **date, language, product, keyword, and vulnerability type**.
+It allows security researchers, penetration testers, and enthusiasts to quickly search for vulnerabilities with **multiple filters** such as date range, product, vendor, severity, and more — making vulnerability research faster and more efficient.
 
----
-
-## Features
-
-* Search CVEs by keyword or product.
-* Filter by:
-
-  * **Publication date** (start and end)
-  * **Language** (keywords in description)
-  * **Product / CPE**
-  * **Vulnerability type / severity** (CRITICAL, HIGH, MEDIUM, LOW)
----
-
-
-
-
+## Why cWee?
+- **Simplified CVE Hunting** – Instead of writing custom queries with `nvdlib` or struggling with the NVD web UI, cWee gives you a clean interface with multiple filters in one place.
+- **Faster Research Workflow** – Apply filters like **date range, vendor, product, severity, and keyword** in a single command to instantly narrow results.
+- **Built for Security Researchers** – Whether you’re analyzing vulnerabilities for red teaming, bug bounties, or academic research, cWee is designed to save time.
+- **Stay Up to Date** – Track recent vulnerabilities without manually browsing the NVD website.
+- **Extensible & Lightweight** – Powered by `nvdlib`, but wrapped into a practical tool that you can extend with your own scripts.
+## Usage
+cWee is live and accessible via the web! 
+visit:
+```
+https://cwee.awwfensive.site/
+```
+### To do
+- - **Multiple Filter Search** – Support applying more than one filter in a single query.
+-  **Multiple Keyword Search** – Allow inputs like `go, web` to return CVEs related to Go-based web applications (currently not supported directly in `nvdlib`).
+-  **Sorting by Date** – Add ascending/descending sort options for results.
