@@ -24,6 +24,6 @@ visit:
 https://cwee.awwfensive.site/
 ```
 ### To do
-- - **Multiple Filter Search** – Support applying more than one filter in a single query.
+- **Multiple Filter Search** – Support applying more than one filter in a single query.
 -  **Multiple Keyword Search** – Allow inputs like `go, web` to return CVEs related to Go-based web applications (currently not supported directly in `nvdlib`).
 -  **Sorting by Date** – Add ascending/descending sort options for results.
