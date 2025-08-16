@@ -1,10 +1,15 @@
-<h1 align="center"><span style="color: #4caf50;">$ </span>cWee</h1>
-<h4 align="center">Advance CVE searching.</h4>
-	   ![demo](https://i.ibb.co/Cs6vQ77W/image.png)
+<h1 align="center">$ cWee</h1>
+<h4 align="center">Advanced CVE Searching</h4>
+
+<p align="center">
+  <img src="https://i.ibb.co/Cs6vQ77W/image.png" alt="cWee Demo" width="700"/>
+</p>
+
 ## cWee
 **cWee** is an advanced CVE (Common Vulnerabilities and Exposures) searching tool, built on top of the powerful [nvdlib](https://nvdlib.com/en/latest/v2/CVEv2.html) library.
 
 It allows security researchers, penetration testers, and enthusiasts to quickly search for vulnerabilities with **multiple filters** such as date range, product, vendor, severity, and more — making vulnerability research faster and more efficient.
+
 
 ## Why cWee?
 - **Simplified CVE Hunting** – Instead of writing custom queries with `nvdlib` or struggling with the NVD web UI, cWee gives you a clean interface with multiple filters in one place.
