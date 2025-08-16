@@ -29,6 +29,6 @@ https://cwee.awwfensive.site/
 -  **Sorting by Date** – Add ascending/descending sort options for results.
 
 
-# Credits 
+## Credits 
 - [nvdlib](https://nvdlib.com/en/latest/v2/CVEv2.html) – Python wrapper for NVD API.  
 - [NVD](https://nvd.nist.gov/) – Source of CVE data.  
