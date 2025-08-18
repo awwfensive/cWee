@@ -26,9 +26,8 @@ https://cwee.awwfensive.site/
 ### To do
 - **Multiple Filter Search** – Support applying more than one filter in a single query.
 -  **Multiple Keyword Search** – Allow inputs like `go, web` to return CVEs related to Go-based web applications (currently not supported directly in `nvdlib`).
--  **Sorting by Date** – Add ascending/descending sort options for results.
-
 
 ## Credits 
 - [nvdlib](https://nvdlib.com/en/latest/v2/CVEv2.html) – Python wrapper for NVD API.  
 - [NVD](https://nvd.nist.gov/) – Source of CVE data.  
+
