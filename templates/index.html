@@ -23,6 +23,7 @@
         margin: 0 0 10px;
         font-size: 2.2rem;
         color: #000;
+        display: inline-block;
     }
     h1::before {
         content: "$ ";
@@ -34,10 +35,31 @@
         margin-bottom: 15px;
     }
 
+    /* GitHub star button */
+    .github-btn {
+        display: inline-block;
+        margin-left: 0px;
+    }
+    .github-btn a {
+        font-family: monospace;
+        font-size: 0.9rem;
+        padding: 4px 10px;
+        border: 1px dashed #4caf50;
+        border-radius: 4px;
+        color: #4caf50;
+        background: #fff;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .github-btn a:hover {
+        background: #4caf50;
+        color: #fff;
+    }
+
     /* Search form styling */
     .search-wrapper {
         display: flex;
-        justify-content: flex-start; /* align to left */
+        justify-content: flex-start;
         width: 100%;
         margin-bottom: 25px;
     }
@@ -48,7 +70,7 @@
         padding: 10px;
         border: 1px dashed #ccc;
         border-radius: 5px;
-        flex: 1; /* allow it to stretch */
+        flex: 1;
     }
     select, input, button {
         font-family: monospace;
@@ -58,12 +80,8 @@
         background-color: #fff;
         color: #222;
     }
-    select {
-        flex: 0 0 160px;
-    }
-    input {
-        flex: 1;
-    }
+    select { flex: 0 0 160px; }
+    input { flex: 1; }
     button {
         background-color: #4caf50;
         color: #fff;
@@ -71,43 +89,70 @@
         cursor: pointer;
         font-weight: bold;
     }
-    button:hover {
-        background-color: #43a047;
-    }
+    button:hover { background-color: #43a047; }
 
     /* Results table */
     table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    table-layout: fixed; /* Forces columns to fixed width for wrapping */
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        table-layout: fixed;
     }
-
     th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px dashed #ccc;
-    vertical-align: top;
-    word-wrap: break-word; /* Wraps long words */
-    white-space: normal;   /* Allows line breaks */
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px dashed #ccc;
+        vertical-align: top;
+        word-wrap: break-word;
+        white-space: normal;
     }
+    th { color: #4caf50; }
+    tr:hover td { background-color: #f3f3f3; }
 
-    th {
+    /* Pagination */
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 1rem;
+    }
+    .pagination a {
+        margin: 0 5px;
+        text-decoration: none;
         color: #4caf50;
+        font-weight: bold;
     }
-    tr:hover td {
-        background-color: #f3f3f3;
+    .pagination strong { margin: 0 5px; color: #000; }
+
+    /* Sort buttons */
+    .sort-buttons {
+        margin: 15px 0;
+        text-align: right;
+    }
+    .sort-buttons form {
+        display: inline;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .sort-buttons button {
+        font-family: monospace;
+        font-size: 0.9rem;
+        background: #e0e0e0;
+        color: #222;
+        border: 1px solid #bbb;
+        border-radius: 3px;
+        padding: 4px 8px;
+        cursor: pointer;
+    }
+    .sort-buttons button:hover {
+        background: #4caf50;
+        color: #fff;
     }
 
-    /* Responsive for small screens */
     @media (max-width: 600px) {
-        form {
-            flex-direction: column;
-        }
-        select, input, button {
-            flex: 1 0 auto;
-            width: 100%;
-        }
+        form { flex-direction: column; }
+        select, input, button { width: 100%; }
+        .sort-buttons { text-align: center; }
     }
 
     footer {
@@ -116,22 +161,24 @@
         color: #777;
         text-align: center;
     }
-    footer a {
-        color: #555;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
 </style>
-
+</head>
+<body>
 <div class="container">
     <h1>cWee</h1>
+    <br>
+    <span class="github-btn">
+        <a href="https://github.com/awwfensive/cWee" target="_blank">⭐ Star on GitHub</a>
+    </span>
+    <br>
+    <br>
     <div class="subtitle">awwfensive cve searching!</div>
 
     <!-- Search form wrapper -->
     <div class="search-wrapper">
-        <form method="POST">
+        <form method="GET" action="/" onsubmit="resetPage()">
             <select name="searchType" id="searchType">
                 <option value="keyword" {% if form_data.searchType == "keyword" %}selected{% endif %}>Keyword</option>
                 <option value="cveId" {% if form_data.searchType == "cveId" %}selected{% endif %}>CVE ID</option>
@@ -140,6 +187,8 @@
                 <option value="dateRange" {% if form_data.searchType == "dateRange" %}selected{% endif %}>Date Range</option>
             </select>
             <input type="text" name="searchQuery" id="searchQuery" placeholder="Enter search term..." value="{{ form_data.searchQuery }}">
+            <input type="hidden" name="page" id="pageInput" value="{{ page or 1 }}">
+            <input type="hidden" name="sort" value="{{ sort or 'asc' }}">
             <button type="submit">Search</button>
         </form>
     </div>
@@ -147,24 +196,37 @@
     <script>
         const searchType = document.getElementById('searchType');
         const searchQuery = document.getElementById('searchQuery');
-
         const placeholders = {
             keyword: "Enter keyword (e.g., javascript)",
             cveId: "Enter CVE ID (e.g., CVE-2021-44228)",
             cpeName: "Enter CPE (e.g., cpe:/a:apache:http_server:2.4.49)",
             severity: "Enter severity (LOW, MEDIUM, HIGH, CRITICAL)",
-            dateRange: "Enter date range (YYYY-MM-DD to YYYY-MM-DD)"
+            dateRange: "Enter date range (YYYY-MM-DD,YYYY-MM-DD)"
         };
-
-        function updatePlaceholder() {
-            searchQuery.placeholder = placeholders[searchType.value];
-        }
-
+        function updatePlaceholder() { searchQuery.placeholder = placeholders[searchType.value]; }
+        function resetPage() { document.getElementById("pageInput").value = 1; }
         searchType.addEventListener('change', updatePlaceholder);
         updatePlaceholder();
     </script>
 
     {% if cves %}
+        <div class="sort-buttons">
+            <form method="GET" action="/">
+                <input type="hidden" name="searchType" value="{{ form_data.searchType }}">
+                <input type="hidden" name="searchQuery" value="{{ form_data.searchQuery }}">
+                <input type="hidden" name="page" value="{{ page }}">
+                <input type="hidden" name="sort" value="asc">
+                <button type="submit">↑ Asc</button>
+            </form>
+            <form method="GET" action="/">
+                <input type="hidden" name="searchType" value="{{ form_data.searchType }}">
+                <input type="hidden" name="searchQuery" value="{{ form_data.searchQuery }}">
+                <input type="hidden" name="page" value="{{ page }}">
+                <input type="hidden" name="sort" value="desc">
+                <button type="submit">↓ Desc</button>
+            </form>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -181,16 +243,43 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ page-1 }}&sort={{ sort }}">Prev</a>
+            {% endif %}
+
+            {% for p in range(1, total_pages+1) %}
+                {% if p == page %}
+                    <strong>[{{ p }}]</strong>
+                {% else %}
+                    <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ p }}&sort={{ sort }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ page+1 }}&sort={{ sort }}">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
     {% elif form_data.searchQuery %}
         <p>No CVEs found.</p>
     {% endif %}
+    
 </div>
-        <footer>
-            <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px;">
-            <div style="font-size: 0.95rem; color: #666;">
-                built with <span style="color: #4caf50;">&lt;3</span> for security research
-            </div>
-        </footer>
+{% if error_message %}
+    <div style="color: red; font-weight: bold; margin-top: 15px;">
+        {{ error_message }}
     </div>
+{% endif %}
+
+<footer>
+    <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px;">
+    <div style="font-size: 0.95rem; color: #666;">
+        built with <span style="color: #4caf50;">&lt;3</span> for security research
+    </div>
+</footer>
 </body>
 </html>
