@@ -215,7 +215,7 @@
 
     <!-- Multi-filter Search Form -->
     <div class="search-wrapper">
-        <form method="GET" action="/" id="searchForm" onsubmit="resetPage()">
+        <form method="GET" action="/cwee" id="searchForm" onsubmit="resetPage()">
             <div id="filters">
                 {% if form_data.searchType and form_data.searchQuery %}
                     {% for i in range(form_data.searchType|length) %}
@@ -314,7 +314,7 @@
 
     {% if cves %}
         <div class="sort-buttons">
-            <form method="GET" action="/">
+            <form method="GET" action="/cwee">
                 {% for i in range(form_data.searchType|length) %}
                     {% if i < form_data.searchQuery|length and form_data.searchQuery[i] %}
                         <input type="hidden" name="searchType[]" value="{{ form_data.searchType[i] }}">
@@ -325,7 +325,7 @@
                 <input type="hidden" name="sort" value="asc">
                 <button type="submit">↑ Asc</button>
             </form>
-            <form method="GET" action="/">
+            <form method="GET" action="/cwee">
                 {% for i in range(form_data.searchType|length) %}
                     {% if i < form_data.searchQuery|length and form_data.searchQuery[i] %}
                         <input type="hidden" name="searchType[]" value="{{ form_data.searchType[i] }}">
@@ -370,7 +370,7 @@
 
         {% if total_pages > 1 %}
         <div class="pagination">
-            {% set base_url = "/?{}&sort={}".format(query_string, sort) %}
+            {% set base_url = "cwee?{}&sort={}".format(query_string, sort) %}
             
             {% if page > 1 %}
                 <a href="{{ base_url }}&page=1">« First</a>
