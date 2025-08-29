@@ -1,285 +1,175 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cWee</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cWee - Home</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 
-<style>
+  <style>
     body {
-        margin: 0;
-        padding: 20px;
-        font-family: monospace;
-        background: #fdfdfd;
-        color: #222;
-        font-size: 18px;
+      margin: 0;
+      font-family: monospace;
+      background: #fdfdfd;
+      color: #222;
+      font-size: 18px;
     }
-    .container {
-        max-width: 900px;
-        margin: auto;
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
     }
+
     h1 {
-        margin: 0 0 10px;
-        font-size: 2.2rem;
-        color: #000;
-        display: inline-block;
+      font-size: 3rem;
+      color: #000;
+      margin: 0;
+      display: inline-block;
+      position: relative;
     }
     h1::before {
-        content: "$ ";
-        color: #4caf50;
+      content: "$ ";
+      color: #4caf50;
     }
+    h1::after {
+      content: "_";
+      margin-left: 5px;
+      opacity: 1;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
     .subtitle {
-        color: #555;
-        font-size: 1.1rem;
-        margin-bottom: 15px;
+      color: #555;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      margin-bottom: 25px;
     }
 
-    /* GitHub star button */
-    .github-btn {
-        display: inline-block;
-        margin-left: 0px;
+    .main-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-family: monospace;
+      font-size: 1rem;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s ease;
     }
-    .github-btn a {
-        font-family: monospace;
-        font-size: 0.9rem;
-        padding: 4px 10px;
-        border: 1px dashed #4caf50;
-        border-radius: 4px;
-        color: #4caf50;
-        background: #fff;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-    .github-btn a:hover {
-        background: #4caf50;
-        color: #fff;
+    .main-btn:hover {
+      background-color: #43a047;
     }
 
-    /* Search form styling */
-    .search-wrapper {
-        display: flex;
-        justify-content: flex-start;
-        width: 100%;
-        margin-bottom: 25px;
+    .github-btns {
+      margin-top: 20px;
     }
-    form {
-        display: flex;
-        gap: 10px;
-        background-color: #fafafa;
-        padding: 10px;
-        border: 1px dashed #ccc;
-        border-radius: 5px;
-        flex: 1;
+    .github-btns a {
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 5px 12px;
+      border: 1px dashed #4caf50;
+      border-radius: 4px;
+      color: #4caf50;
+      background: #fff;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      margin: 0 5px;
     }
-    select, input, button {
-        font-family: monospace;
-        font-size: 1rem;
-        padding: 6px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-        color: #222;
-    }
-    select { flex: 0 0 160px; }
-    input { flex: 1; }
-    button {
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-    }
-    button:hover { background-color: #43a047; }
-
-    /* Results table */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        table-layout: fixed;
-    }
-    th, td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px dashed #ccc;
-        vertical-align: top;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-    th { color: #4caf50; }
-    tr:hover td { background-color: #f3f3f3; }
-
-    /* Pagination */
-    .pagination {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 1rem;
-    }
-    .pagination a {
-        margin: 0 5px;
-        text-decoration: none;
-        color: #4caf50;
-        font-weight: bold;
-    }
-    .pagination strong { margin: 0 5px; color: #000; }
-
-    /* Sort buttons */
-    .sort-buttons {
-        margin: 15px 0;
-        text-align: right;
-    }
-    .sort-buttons form {
-        display: inline;
-        background: none;
-        border: none;
-        padding: 0;
-    }
-    .sort-buttons button {
-        font-family: monospace;
-        font-size: 0.9rem;
-        background: #e0e0e0;
-        color: #222;
-        border: 1px solid #bbb;
-        border-radius: 3px;
-        padding: 4px 8px;
-        cursor: pointer;
-    }
-    .sort-buttons button:hover {
-        background: #4caf50;
-        color: #fff;
+    .github-btns a:hover {
+      background: #4caf50;
+      color: #fff;
     }
 
-    @media (max-width: 600px) {
-        form { flex-direction: column; }
-        select, input, button { width: 100%; }
-        .sort-buttons { text-align: center; }
+    .info-section {
+      max-width: 800px;
+      text-align: left;
+      line-height: 1.6;
+    }
+    .info-section h2 {
+      font-size: 1.4rem;
+      color: #000;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .info-section h2::before {
+      content: "➜ ";
+      color: #4caf50;
+    }
+    .info-section p {
+      margin: 0 0 20px;
+      color: #444;
     }
 
     footer {
-        margin-top: 3rem;
-        font-size: 1rem;
-        color: #777;
-        text-align: center;
+      margin-top: 40px;
+      text-align: center;
+      width: 100%;
+      font-size: 0.95rem;
+      color: #666;
     }
-    footer a { color: #555; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-</style>
+    footer a {
+      color: #555;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+
+  <!-- Hero Section -->
+  <section>
     <h1>cWee</h1>
-    <br>
-    <span class="github-btn">
-        <a href="https://github.com/awwfensive/cWee" target="_blank">⭐ Star on GitHub</a>
-    </span>
-    <br>
-    <br>
-    <div class="subtitle">awwfensive cve searching!</div>
+    <div class="subtitle">awwfensive CVE searching!</div>
+    <a href="http://cwee.awwfensive.site/cwee" class="main-btn">→ Enter cWee</a>
 
-    <!-- Search form wrapper -->
-    <div class="search-wrapper">
-        <form method="GET" action="/" onsubmit="resetPage()">
-            <select name="searchType" id="searchType">
-                <option value="keyword" {% if form_data.searchType == "keyword" %}selected{% endif %}>Keyword</option>
-                <option value="cveId" {% if form_data.searchType == "cveId" %}selected{% endif %}>CVE ID</option>
-                <option value="cpeName" {% if form_data.searchType == "cpeName" %}selected{% endif %}>CPE Name</option>
-                <option value="severity" {% if form_data.searchType == "severity" %}selected{% endif %}>Severity</option>
-                <option value="dateRange" {% if form_data.searchType == "dateRange" %}selected{% endif %}>Date Range</option>
-            </select>
-            <input type="text" name="searchQuery" id="searchQuery" placeholder="Enter search term..." value="{{ form_data.searchQuery }}">
-            <input type="hidden" name="page" id="pageInput" value="{{ page or 1 }}">
-            <input type="hidden" name="sort" value="{{ sort or 'asc' }}">
-            <button type="submit">Search</button>
-        </form>
+    <div class="github-btns">
+      <a href="https://github.com/awwfensive/cWee" target="_blank">⭐ Star on GitHub</a>
+      <a href="https://github.com/sponsors/awwfensive" target="_blank">❤️ Sponsor</a>
+    </div>
+  </section>
+
+  <!-- Info Section -->
+  <section>
+    <div class="info-section">
+      <h2>Who should use cWee?</h2>
+      <p>
+        • Security researchers hunting for fresh CVEs.<br>
+        • Red teamers tracking vulnerabilities by keyword, CPE, or severity.<br>
+        • Bug bounty hunters searching CVEs related to their scope.<br>
+        • Blue team defenders monitoring new risks to their infrastructure.
+      </p>
+
+      <h2>Why use cWee?</h2>
+      <p>
+        • Fast + flexible multi-filter searching (keywords, CVE IDs, severity, date ranges, CPEs).<br>
+        • Simple hacker-style UI with pagination + sorting.<br>
+        • Cuts through NVD noise so you can focus on what matters.<br>
+        • 100% open-source — built for the community.
+      </p>
     </div>
 
-    <script>
-        const searchType = document.getElementById('searchType');
-        const searchQuery = document.getElementById('searchQuery');
-        const placeholders = {
-            keyword: "Enter keyword (e.g., javascript)",
-            cveId: "Enter CVE ID (e.g., CVE-2021-44228)",
-            cpeName: "Enter CPE (e.g., cpe:/a:apache:http_server:2.4.49)",
-            severity: "Enter severity (LOW, MEDIUM, HIGH, CRITICAL)",
-            dateRange: "Enter date range (YYYY-MM-DD,YYYY-MM-DD)"
-        };
-        function updatePlaceholder() { searchQuery.placeholder = placeholders[searchType.value]; }
-        function resetPage() { document.getElementById("pageInput").value = 1; }
-        searchType.addEventListener('change', updatePlaceholder);
-        updatePlaceholder();
-    </script>
+    <footer>
+      <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px; width: 80%;">
+      <a href="https://x.com/awwfensive" target="_blank">X</a> |
+      <a href="https://awwfensive.site" target="_blank">awwfensive website</a> |
+      <a href="https://github.com/awwfensive" target="_blank">GitHub</a>
+    </footer>
+  </section>
 
-    {% if cves %}
-        <div class="sort-buttons">
-            <form method="GET" action="/">
-                <input type="hidden" name="searchType" value="{{ form_data.searchType }}">
-                <input type="hidden" name="searchQuery" value="{{ form_data.searchQuery }}">
-                <input type="hidden" name="page" value="{{ page }}">
-                <input type="hidden" name="sort" value="asc">
-                <button type="submit">↑ Asc</button>
-            </form>
-            <form method="GET" action="/">
-                <input type="hidden" name="searchType" value="{{ form_data.searchType }}">
-                <input type="hidden" name="searchQuery" value="{{ form_data.searchQuery }}">
-                <input type="hidden" name="page" value="{{ page }}">
-                <input type="hidden" name="sort" value="desc">
-                <button type="submit">↓ Desc</button>
-            </form>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>CVE ID</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cve in cves %}
-                <tr>
-                    <td><a href="https://nvd.nist.gov/vuln/detail/{{ cve.id }}" target="_blank">{{ cve.id }}</a></td>
-                    <td>{{ cve.descriptions[0].value }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Pagination -->
-        {% if total_pages > 1 %}
-        <div class="pagination">
-            {% if page > 1 %}
-                <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ page-1 }}&sort={{ sort }}">Prev</a>
-            {% endif %}
-
-            {% for p in range(1, total_pages+1) %}
-                {% if p == page %}
-                    <strong>[{{ p }}]</strong>
-                {% else %}
-                    <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ p }}&sort={{ sort }}">{{ p }}</a>
-                {% endif %}
-            {% endfor %}
-
-            {% if page < total_pages %}
-                <a href="/?searchType={{ form_data.searchType }}&searchQuery={{ form_data.searchQuery }}&page={{ page+1 }}&sort={{ sort }}">Next</a>
-            {% endif %}
-        </div>
-        {% endif %}
-    {% elif form_data.searchQuery %}
-        <p>No CVEs found.</p>
-    {% endif %}
-    
-</div>
-{% if error_message %}
-    <div style="color: red; font-weight: bold; margin-top: 15px;">
-        {{ error_message }}
-    </div>
-{% endif %}
-
-<footer>
-    <hr style="border: none; border-top: 1px dashed #ccc; margin-bottom: 10px;">
-    <div style="font-size: 0.95rem; color: #666;">
-        built with <span style="color: #4caf50;">&lt;3</span> for security research
-    </div>
-</footer>
 </body>
 </html>
