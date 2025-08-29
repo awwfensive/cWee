@@ -11,21 +11,28 @@
 It allows security researchers, penetration testers, and enthusiasts to quickly search for vulnerabilities with **multiple filters** such as date range, product, vendor, severity, and more — making vulnerability research faster and more efficient.
 
 
-## Why cWee?
-- **Simplified CVE Hunting** – Instead of writing custom queries with `nvdlib` or struggling with the NVD web UI, cWee gives you a clean interface with multiple filters in one place.
-- **Faster Research Workflow** – Apply filters like **date range, vendor, product, severity, and keyword** in a single command to instantly narrow results.
-- **Built for Security Researchers** – Whether you’re analyzing vulnerabilities for red teaming, bug bounties, or academic research, cWee is designed to save time.
-- **Stay Up to Date** – Track recent vulnerabilities without manually browsing the NVD website.
-- **Extensible & Lightweight** – Powered by `nvdlib`, but wrapped into a practical tool that you can extend with your own scripts.
+Who should use cWee?
+--------------------
+
+• Security researchers hunting for fresh CVEs.
+• Red teamers tracking vulnerabilities by keyword, CPE, or severity.
+• Bug bounty hunters searching CVEs related to their scope.
+• Blue team defenders monitoring new risks to their infrastructure.
+
+Why use cWee?
+-------------
+
+• Fast + flexible multi-filter searching (keywords, CVE IDs, severity, date ranges, CPEs).
+• Simple hacker-style UI with pagination + sorting.
+• Cuts through NVD noise so you can focus on what matters.
+• 100% open-source — built for the community.
+
 ## Usage
 cWee is live and accessible via the web! 
 visit:
 ```
 https://cwee.awwfensive.site/
 ```
-### To do
-- **Multiple Filter Search** – Support applying more than one filter in a single query.
--  **Multiple Keyword Search** – Allow inputs like `go, web` to return CVEs related to Go-based web applications (currently not supported directly in `nvdlib`).
 
 
 ## Credits 
