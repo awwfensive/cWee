@@ -14,18 +14,18 @@ It allows security researchers, penetration testers, and enthusiasts to quickly 
 Who should use cWee?
 --------------------
 
-• Security researchers hunting for fresh CVEs.
-• Red teamers tracking vulnerabilities by keyword, CPE, or severity.
-• Bug bounty hunters searching CVEs related to their scope.
-• Blue team defenders monitoring new risks to their infrastructure.
+- Security researchers hunting for fresh CVEs.
+- Red teamers tracking vulnerabilities by keyword, CPE, or severity.
+- Bug bounty hunters searching CVEs related to their scope.
+- Blue team defenders monitoring new risks to their infrastructure.
 
 Why use cWee?
 -------------
 
-• Fast + flexible multi-filter searching (keywords, CVE IDs, severity, date ranges, CPEs).
-• Simple hacker-style UI with pagination + sorting.
-• Cuts through NVD noise so you can focus on what matters.
-• 100% open-source — built for the community.
+- Fast + fle  xible multi-filter searching (keywords, CVE IDs, severity, date ranges, CPEs).
+- Simple hacker-style UI with pagination + sorting.
+- Cuts through NVD noise so you can focus on what matters.
+
 
 ## Usage
 cWee is live and accessible via the web! 
@@ -38,4 +38,5 @@ https://cwee.awwfensive.site/
 ## Credits 
 - [nvdlib](https://nvdlib.com/en/latest/v2/CVEv2.html) – Python wrapper for NVD API.  
 - [NVD](https://nvd.nist.gov/) – Source of CVE data.  
+
 
