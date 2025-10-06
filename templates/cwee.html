@@ -16,7 +16,7 @@
         font-size: 18px;
     }
     .container {
-        max-width: 900px;
+        max-width: 1200px;
         margin: auto;
     }
     h1::before {
@@ -136,6 +136,76 @@
     }
     th { color: #4caf50; }
     tr:hover td { background-color: #f3f3f3; }
+
+    /* POC/References styling */
+    .poc-section {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dotted #ddd;
+        font-size: 0.9rem;
+    }
+    .poc-title {
+        color: #ff6b6b;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .poc-links {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .poc-link {
+        color: #4caf50;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .poc-link:hover {
+        text-decoration: underline;
+        color: #43a047;
+    }
+    .ref-link {
+        color: #4caf50;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .ref-link:hover {
+        text-decoration: underline;
+        color: #43a047;
+    }
+    .poc-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        background-color: #ff6b6b;
+        color: white;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        margin-left: 5px;
+        font-weight: bold;
+    }
+    .ref-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        background-color: #64b5f6;
+        color: white;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        margin-left: 5px;
+    }
+
+    /* Enlarged "Other References" section */
+    .poc-section .ref-link {
+        font-size: 1.15rem;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    /* Increase title size and weight for "Other References" header (inline-styled div detection) */
+    .poc-section div[style*="color: #000000; font-weight: bold; margin-bottom: 11px;"] {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
 
     /* Pagination */
     .pagination {
@@ -341,9 +411,9 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 15%;">CVE ID</th>
-                    <th style="width: 15%;">Status</th>
-                    <th style="width: 70%;">Description</th>
+                    <th style="width: 12%;">CVE ID</th>
+                    <th style="width: 12%;">Status</th>
+                    <th style="width: 76%;">Description & References</th>
                 </tr>
             </thead>
             <tbody>
@@ -361,6 +431,51 @@
                         {% endfor %}
                         {% if not description_found %}
                             {{ cve.descriptions[0].value if cve.descriptions else 'No description available' }}
+                        {% endif %}
+
+                        {# POC/References Section #}
+                        {% if cve.references %}
+                            {% set poc_refs = [] %}
+                            {% set other_refs = [] %}
+                            {% for ref in cve.references %}
+                                {% set ref_url_lower = ref.url.lower() %}
+                                {% set ref_tags = ref.tags if hasattr(ref, 'tags') and ref.tags else [] %}
+                                
+                                {# Check for POC indicators #}
+                                {% if 'exploit' in ref_tags or 'poc' in ref_url_lower or 'exploit' in ref_url_lower or 'github.com' in ref_url_lower and ('poc' in ref_url_lower or 'exploit' in ref_url_lower) %}
+                                    {% set _ = poc_refs.append(ref) %}
+                                {% else %}
+                                    {% set _ = other_refs.append(ref) %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {# Display POC references if found #}
+                            {% if poc_refs %}
+                                <div class="poc-section">
+                                    <div class="poc-title">POC/Exploit References:</div>
+                                    <div class="poc-links">
+                                        {% for ref in poc_refs %}
+                                            <a href="{{ ref.url }}" target="_blank" class="poc-link">
+                                                 {{ ref.url }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {# Display other references (show all) #}
+                            {% if other_refs %}
+                                <div class="poc-section">
+                                    <div style="color: #2b2b2b; font-weight: bold; margin-bottom: 11px; font-size: 18px;">Other References:</div>
+                                     <div class="poc-links">
+                                        {% for ref in other_refs %}
+                                            <a href="{{ ref.url }}" target="_blank" class="ref-link">
+                                                {{ ref.url }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

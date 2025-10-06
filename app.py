@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, url_for
 import nvdlib
-from datetime import datetime
+from datetime import datetime, timezone
 import math
 import time
 
@@ -22,7 +22,7 @@ def index():
     error_message = None
     total_results = 0
 
-    # handle multi filter form data from query parameters :p
+    # handle multi filter form data from query parameters
     search_types = request.args.getlist("searchType[]")
     search_queries = request.args.getlist("searchQuery[]")
     
@@ -32,7 +32,7 @@ def index():
     form_data["searchType"] = search_types
     form_data["searchQuery"] = search_queries
 
-    # filter out the empty queries and correcty pair types and queries
+    # filter out the empty queries and correctly pair types and queries
     filters = []
     for i in range(len(search_types)):
         if i < len(search_queries) and search_queries[i].strip():
@@ -45,10 +45,10 @@ def index():
 
     if filters:
         try:
-            # rate limiting to be nice to the NVD API - me good boye 
+            # rate limiting to be nice to the NVD API
             time.sleep(0.1)
             
-            # Start with first filter - this is our base dataset -  BIG BRAIN MOVE
+            # Start with first filter - this is our base dataset
             first_filter = filters[0]
             params = {}
             search_type = first_filter["type"]
@@ -70,20 +70,30 @@ def index():
                 try:
                     dates = search_query.split(",")
                     if len(dates) != 2:
-                        raise ValueError("Must provide exactly 2 dates")
+                        raise ValueError("Must provide exactly 2 dates separated by comma")
                     
                     start_date = dates[0].strip()
                     end_date = dates[1].strip()
                     
-                    # falidate date format
-                    datetime.strptime(start_date, "%Y-%m-%d")
-                    datetime.strptime(end_date, "%Y-%m-%d")
+                    # validate date format and convert to datetime objects with timezone
+                    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+                    end_dt = datetime.strptime(end_date, "%Y-%m-%d")
                     
-                    params["pubStartDate"] = start_date
-                    params["pubEndDate"] = end_date
-                except ValueError:
-                    error_message = "Invalid date range format. Use YYYY-MM-DD,YYYY-MM-DD"
+                    # Add timezone info and set time to start/end of day
+                    start_dt = start_dt.replace(hour=0, minute=0, second=0, tzinfo=timezone.utc)
+                    end_dt = end_dt.replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+                    
+                    # nvdlib accepts datetime objects for date parameters
+                    params["pubStartDate"] = start_dt
+                    params["pubEndDate"] = end_dt
+                    
+                    print(f"DEBUG - Date range: {start_dt} to {end_dt}")
+                except ValueError as e:
+                    error_message = f"Invalid date range format. Use YYYY-MM-DD,YYYY-MM-DD. Error: {str(e)}"
+                except Exception as e:
+                    error_message = f"Error parsing date range: {str(e)}"
 
+            # Only proceed if we have valid params and no errors
             if not error_message and params:
                 print(f"Base search with params: {params}")
                 
@@ -93,7 +103,7 @@ def index():
                 
                 print(f"Base filter '{search_type}:{search_query}' found {len(all_cves)} CVEs")
                 
-                # apply remaining filters as post-processing on the results we have fetched :D only works well if the first filter is selective enough  
+                # apply remaining filters as post-processing on the results we have fetched
                 for filter_item in filters[1:]:
                     filter_type = filter_item["type"]
                     filter_query = filter_item["query"]
@@ -136,8 +146,8 @@ def index():
                                     pub_date = datetime.fromisoformat(cve.published.replace('Z', '+00:00'))
                                     if start_date <= pub_date.replace(tzinfo=None) <= end_date:
                                         filtered_cves.append(cve)
-                        except:
-                            error_message = f"Invalid date range in filter: {filter_query}"
+                        except Exception as e:
+                            error_message = f"Invalid date range in filter: {filter_query}. Error: {str(e)}"
                             break
                     
                     elif filter_type == "cpeName":
@@ -168,7 +178,7 @@ def index():
                     total_results = len(all_cves)
                     total_pages = math.ceil(total_results / per_page)
 
-                    # Ensure page is within valid range - math is hard 
+                    # Ensure page is within valid range
                     page = max(1, min(page, total_pages))
 
                     start = (page - 1) * per_page
@@ -177,12 +187,16 @@ def index():
                     
                 else:
                     error_message = "No CVEs found after applying all filters"
+            elif not error_message:
+                error_message = "Please provide valid search parameters"
 
         except Exception as e:
             error_message = f"Error fetching CVEs: {str(e)}"
             print(f"Exception details: {e}")
+            import traceback
+            traceback.print_exc()
 
-    # create query string for pagination links and sorting linksssssssssssss
+    # create query string for pagination links and sorting links
     query_params = []
     for i in range(len(form_data["searchType"])):
         if i < len(form_data["searchQuery"]) and form_data["searchQuery"][i].strip():
@@ -201,7 +215,9 @@ def index():
         error_message=error_message,
         total_results=total_results,
         query_string=query_string,
-        request=request
+        request=request,
+        any=any, 
+        hasattr=hasattr 
     )
 
 if __name__ == '__main__':
